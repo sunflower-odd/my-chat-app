@@ -1,4 +1,3 @@
-// src/components/settings/SettingsPanel.tsx
 import React from 'react';
 
 interface SettingsPanelProps {
@@ -32,7 +31,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           </select>
         </div>
 
-        {/* Temperature */}
+        {/* Температура */}
         <div className="mb-4">
           <label className="block font-medium mb-1">Temperature</label>
           <input

@@ -2,25 +2,29 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
 interface MessageProps {
-  role: 'user' | 'assistant';
+  variant: 'user' | 'assistant';
   content: string;
+  timestamp: number;
 }
 
-const Message: React.FC<MessageProps> = ({ role, content }) => {
+const Message: React.FC<MessageProps> = ({ variant, content, timestamp }) => {
   return (
-    <div className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex ${variant === 'user' ? 'justify-end' : 'justify-start'} my-1`}>
       <div
         className={`
-          inline-block           /* <-- добавлено: чтобы блок сообщения растягивался по содержимому */
-          max-w-[80%]            /* <-- добавлено: не больше 80% ширины панели */
+          w-auto
+          max-w-[80%]
           p-3
           rounded-lg
-          ${role === 'user'
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'}
+          ${variant === 'user'
+            ? 'text-gray-700'
+            : 'text-black'}   
         `}
       >
         <ReactMarkdown>{content}</ReactMarkdown>
+        <div className="text-xs text-gray-500 mt-1">
+          {new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </div>
       </div>
     </div>
   );

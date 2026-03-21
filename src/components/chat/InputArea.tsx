@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const InputArea: React.FC = () => {
+interface InputAreaProps {
+  onSend: (content: string) => void; 
+  isLoading: boolean;                
+}
+
+const InputArea: React.FC<InputAreaProps> = ({ onSend, isLoading }) => {
   const [text, setText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -8,15 +13,18 @@ const InputArea: React.FC = () => {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      const newHeight = Math.min(textareaRef.current.scrollHeight, 5 * 24); // 5 строк, примерно 24px каждая
+      const newHeight = Math.min(textareaRef.current.scrollHeight, 5 * 24); // 5 строк
       textareaRef.current.style.height = `${newHeight}px`;
     }
   }, [text]);
 
+
+
   const handleSend = () => {
-    if (!text.trim()) return;
-    console.log('Отправка сообщения:', text);
-    setText('');
+    if (!text.trim() || isLoading) return; // блокируем при пустом вводе или загрузке
+
+    onSend(text);      // вызываем функцию отправки из ChatWindow
+    setText('');       // очищаем поле ввода после отправки
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

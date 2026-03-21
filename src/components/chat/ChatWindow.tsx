@@ -1,42 +1,61 @@
-// src/components/chat/ChatWindow.tsx
 import React, { useState } from 'react';
 import InputArea from './InputArea';
-import TypingIndicator from './TypingIndicator';
-import Message from './Message';
 import ErrorMessage from '../ui/ErrorMessage';
-import EmptyState from '../ui/EmptyState';
-
-type MessageType = {
-  id: number;
-  role: 'user' | 'assistant';
-  content: string;
-};
+import MessagesList from './MessagesList';
+import type { MessageType } from '../types/message';
 
 interface ChatWindowProps {
   onOpenSettings?: () => void;
 }
 
-const mockMessages: MessageType[] = [
-  { id: 1, role: 'assistant', content: 'Привет! Чем могу помочь?' },
-  { id: 2, role: 'user', content: 'Расскажи про React' },
-  { id: 3, role: 'assistant', content: 'React — это библиотека для UI 😎' },
-  { id: 4, role: 'user', content: 'А что такое компоненты?' },
-  { id: 5, role: 'assistant', content: 'Компоненты — это переиспользуемые части UI' },
-  { id: 6, role: 'user', content: 'Понял, спасибо!' },
+const initialMessages: MessageType[] = [
+  { id: 1, role: 'assistant', content: 'Привет! Чем могу помочь?', timestamp: Date.now() - 60000 },
+  { id: 2, role: 'user', content: 'Расскажи про React', timestamp: Date.now() - 50000 },
+  { id: 3, role: 'assistant', content: 'React — это библиотека для UI 😎', timestamp: Date.now() - 40000 },
+  { id: 4, role: 'user', content: 'А что такое компоненты?', timestamp: Date.now() - 30000 },
+  { id: 5, role: 'assistant', content: 'Компоненты — это переиспользуемые части UI', timestamp: Date.now() - 20000 },
+  { id: 6, role: 'user', content: 'Понял, спасибо!', timestamp: Date.now() - 10000 },
 ];
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
-  // const [error, setError] = useState<string | null>(null); // 
-  // const error: string | null = null;
+  const [messages, setMessages] = useState<MessageType[]>(initialMessages);
+  const [isLoading, setIsLoading] = useState(false);
   const [error] = useState<string | null>(null);
+
+  // Отправка сообщения пользователя
+  const handleSendMessage = (content: string) => {
+    if (!content.trim()) return;
+
+    const userMessage: MessageType = {
+      id: Date.now(),
+      role: 'user',
+      content,
+      timestamp: Date.now(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
+
+    // Симулируем ответ ассистента через 1–2 секунды
+    setTimeout(() => {
+      const assistantMessage: MessageType = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'Это ответ ассистента 😎',
+        timestamp: Date.now(),
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+      setIsLoading(false);
+    }, 1500 + Math.random() * 500);
+  };
 
   return (
     <div className="flex-1 flex flex-col border-l border-gray-300 dark:border-gray-700">
       {/* Header */}
-      <div className="p-4 border-b flex justify-between items-center bg-gray-50 dark:bg-gray-800">
-        <h2 className="text-lg font-semibold text-center flex-1">Мой чат</h2>
+      <div className="p-4 border-b flex justify-between items-center bg-blue-500">
+        <h2 className="text-lg font-semibold text-center flex-1 text-white">Мой чат</h2>
         <button
-          className="text-gray-500 hover:text-gray-800 dark:hover:text-white"
+          className="text-white hover:text-gray-200"
           onClick={onOpenSettings}
         >
           ⚙️
@@ -44,25 +63,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
       </div>
 
       {/* Сообщения */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white dark:bg-gray-900 flex flex-col">
-        {mockMessages.length === 0 && <EmptyState />}
-        {mockMessages.map((msg) => (
-          <Message
-            key={msg.id}
-            role={msg.role}
-            content={msg.content}
-          />
-        ))}
-
-        {/* Индикатор печати ассистента */}
-        <TypingIndicator isVisible={true} />
-      </div>
+      <MessagesList messages={messages} isLoading={isLoading} />
 
       {/* Ошибка */}
       {error && <ErrorMessage text={error} />}
 
       {/* Поле ввода */}
-      <InputArea />
+      <InputArea onSend={handleSendMessage} isLoading={isLoading} />
     </div>
   );
 };

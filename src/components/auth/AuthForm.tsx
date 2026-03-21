@@ -1,4 +1,3 @@
-// src/components/auth/AuthForm.tsx
 import React, { useState } from 'react';
 
 const SCOPES = [
@@ -34,7 +33,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Авторизация</h2>
 
-        {/* Credentials */}
+        {/* Пароль */}
         <div className="mb-4">
           <label className="block font-medium mb-1">Credentials (Base64)</label>
           <input
@@ -48,9 +47,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
           )}
         </div>
 
-        {/* Scope */}
+        {/* Тип УЗ */}
         <div className="mb-4">
-          <span className="block font-medium mb-1">Scope</span>
+          <span className="block font-medium mb-1">Тип учетной записи</span>
           <div className="flex flex-col space-y-1">
             {SCOPES.map((s) => (
               <label key={s.value} className="flex items-center space-x-2">
@@ -68,7 +67,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
           </div>
         </div>
 
-        {/* Submit */}
+        {/* Войти */}
         <button
           type="submit"
           className="w-full py-2 rounded bg-blue-500 text-white hover:bg-blue-600"

@@ -1,4 +1,3 @@
-// src/components/AppLayout.tsx
 import React, { useState } from 'react';
 import Sidebar from '../sidebar/Sidebar';
 import ChatWindow from '../chat/ChatWindow';
@@ -31,8 +30,10 @@ const AppLayout: React.FC = () => {
       </div>
 
       {/* Пустая область для SettingsPanel */}
-      <div className="w-80 relative border-l border-gray-300 dark:border-gray-700">
-        <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      <div className="w-80 flex flex-col border-l border-gray-300 dark:border-gray-700">
+        <div className="flex-1">
+          <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        </div>
       </div>
     </div>
   );
