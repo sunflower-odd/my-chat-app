@@ -2,22 +2,32 @@
 
 /* ====== Переменные и глобальные стили ====== */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
+  /* Цвета текста */
+  --text: #4b4b59;       /* основной текст */
+  --text-h: #111827;     /* заголовки */
+  
+  /* Фон и бордеры */
+  --bg: #ffffff;           /* основной фон */
+  --border: #d1d5db;       /* стандартная граница */
+  
+  /* Акцентные цвета для кнопок, ссылок и hover */
+  --accent: #7c3aed;       /* кнопки */
+  --accent-hover: #9333ea; /* при наведении */
+  --accent-bg: rgba(124, 58, 237, 0.1);
+  --accent-border: rgba(124, 58, 237, 0.5);
+  
+  /* Для блоков соцсетей или карточек */
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
-            rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
+  
+  /* Тени */
+  --shadow: rgba(0,0,0,0.1) 0 10px 15px -3px, rgba(0,0,0,0.05) 0 4px 6px -2px;
+  
+  /* Шрифты */
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  /* Базовые настройки текста */
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
@@ -25,6 +35,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --border-color: #000; /* черная рамка */
+  --border-width: 1px;   /* толщина рамки */
 }
 
 @media (max-width: 1024px) {
@@ -33,19 +46,19 @@
   }
 }
 
+/* ====== Тёмная тема ====== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
+    --text: #cbd5e1;
     --text-h: #f3f4f6;
     --bg: #16171d;
     --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
+    --accent: #a78bfa;
+    --accent-hover: #c4b5fd;
+    --accent-bg: rgba(167, 139, 250, 0.15);
+    --accent-border: rgba(167, 139, 250, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
-              rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    --shadow: rgba(0,0,0,0.4) 0 10px 15px -3px, rgba(0,0,0,0.25) 0 4px 6px -2px;
   }
 }
 
@@ -60,9 +73,7 @@ body, html {
   font-family: var(--sans);
 }
 
-
-
-/* ====== Дополнительно: код и заголовки ====== */
+/* ====== Заголовки ====== */
 h1, h2 {
   font-family: var(--heading);
   font-weight: 500;
@@ -77,17 +88,71 @@ h1 {
 
 h2 {
   font-size: 24px;
-  line-height: 118%;
+  line-height: 1.18;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
 }
 
+/* ====== Кодовые блоки ====== */
 code {
   font-family: var(--mono);
   font-size: 15px;
-  line-height: 135%;
+  line-height: 1.35;
   padding: 4px 8px;
-  border-radius: 4px;
-  background: var(--code-bg);
-  color: var(--text-h);
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* ====== Кнопки и интерактив ====== */
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ====== Ссылки ====== */
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* ====== Текстовые поля ====== */
+input, textarea {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-bg);
+}
+
+/* ====== Тени и карточки ====== */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: rgba(0,0,0,0.15) 0 10px 20px -5px;
 }

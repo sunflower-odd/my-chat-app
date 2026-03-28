@@ -22,7 +22,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error] = useState<string | null>(null);
 
-  // Отправка сообщения пользователя
   const handleSendMessage = (content: string) => {
     if (!content.trim()) return;
 
@@ -36,7 +35,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Симулируем ответ ассистента через 1–2 секунды
     setTimeout(() => {
       const assistantMessage: MessageType = {
         id: Date.now() + 1,
@@ -50,26 +48,31 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col border-l border-gray-300 dark:border-gray-700">
+    <div className="flex-1 flex flex-col border border-black"> {/* Единая рамка вокруг всего чата */}
+
       {/* Header */}
-      <div className="p-4 border-b flex justify-between items-center bg-blue-500">
-        <h2 className="text-lg font-semibold text-center flex-1 text-white">Мой чат</h2>
+      <div className="p-4 flex justify-between items-center bg-gray-200 text-black border-b border-black">
+        <h2 className="text-lg font-semibold flex-1 text-center">Мой чат</h2>
         <button
-          className="text-white hover:text-gray-200"
+          className="text-black hover:text-gray-700 transition-colors"
           onClick={onOpenSettings}
         >
           ⚙️
         </button>
       </div>
 
-      {/* Сообщения */}
-      <MessagesList messages={messages} isLoading={isLoading} />
+      {/* Сообщения с прокруткой */}
+      <div className="flex-1 overflow-auto border-b border-black"> {/* нижняя рамка совпадает с InputArea */}
+        <MessagesList messages={messages} isLoading={isLoading} />
+      </div>
 
       {/* Ошибка */}
       {error && <ErrorMessage text={error} />}
 
       {/* Поле ввода */}
-      <InputArea onSend={handleSendMessage} isLoading={isLoading} />
+      <div className="border-t border-black"> {/* рамка сверху поля ввода, чтобы совпадало с остальными */}
+        <InputArea onSend={handleSendMessage} isLoading={isLoading} />
+      </div>
     </div>
   );
 };

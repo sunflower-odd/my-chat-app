@@ -17,30 +17,37 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   return (
     <div
       className={`
-        fixed inset-y-0 left-0 w-64 bg-gray-100 dark:bg-gray-800 p-4 border-r border-gray-300 dark:border-gray-700
+        fixed inset-y-0 left-0 w-64 bg-[var(--bg)] dark:bg-[var(--bg-dark)] p-4 border-r border-[var(--border)]
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
         md:translate-x-0 md:relative md:flex
-        overflow-auto
+        flex flex-col h-screen
       `}
     >
-      {/* Кнопка закрытия только на мобильных */}
-      <button className="mb-4 w-full bg-blue-500 text-white p-2 rounded md:hidden" onClick={onClose}>
-        ❌ Close
+      {/* ===== Кнопка закрытия только на мобильных ===== */}
+      <button
+        className="mb-4 w-full bg-red-500 text-white p-2 rounded md:hidden hover:opacity-80 transition"
+        onClick={onClose}
+      >
+        ❌ Закрыть
       </button>
 
-      {/* Новый чат */}
-      <button className="mb-4 w-full bg-green-500 text-white p-2 rounded">➕ Новый чат</button>
+      {/* ===== Новый чат (адаптивная кнопка) ===== */}
+      <button
+        className="mb-4 w-full bg-green-500 text-white p-3 rounded hover:bg-green-600 transition"
+      >
+        ➕ Новый чат
+      </button>
 
-      {/* Поиск */}
+      {/* ===== Поиск ===== */}
       <input
         type="text"
         placeholder="Поиск..."
-        className="mb-4 w-full p-2 border rounded border-gray-300 dark:border-gray-700"
+        className="mb-4 w-full p-2 border rounded border-[var(--border)] bg-[var(--bg)] text-[var(--text)] dark:bg-[var(--bg-dark)] dark:text-[var(--text-h)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
       />
 
-      {/* Список чатов */}
-      <div className="flex flex-col gap-2">
+      {/* ===== Список чатов ===== */}
+      <div className="flex-1 flex flex-col gap-2 overflow-y-auto">
         {mockChats.map((chat, idx) => (
           <div
             key={idx}
