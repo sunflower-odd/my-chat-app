@@ -1,13 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 interface InputAreaProps {
   onSend: (content: string) => void;
   onStop?: () => void;
   isLoading: boolean;
+  value: string; // контролируемое значение
+  onChange: (val: string) => void; // контролируемое изменение
 }
 
-const InputArea: React.FC<InputAreaProps> = ({ onSend, onStop, isLoading }) => {
-  const [text, setText] = useState('');
+const InputArea: React.FC<InputAreaProps> = ({ onSend, onStop, isLoading, value, onChange }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Автоподстройка высоты textarea (до 5 строк)
@@ -19,13 +20,12 @@ const InputArea: React.FC<InputAreaProps> = ({ onSend, onStop, isLoading }) => {
       const newHeight = Math.min(textareaRef.current.scrollHeight, maxHeight);
       textareaRef.current.style.height = `${newHeight}px`;
     }
-  }, [text]);
+  }, [value]);
 
   const handleSend = () => {
-    const trimmed = text.trim();
+    const trimmed = value.trim();
     if (!trimmed || isLoading) return;
     onSend(trimmed);
-    setText('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -45,8 +45,8 @@ const InputArea: React.FC<InputAreaProps> = ({ onSend, onStop, isLoading }) => {
       {/* Текстовое поле */}
       <textarea
         ref={textareaRef}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Напишите сообщение..."
         className="flex-1 resize-none p-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] min-h-[40px] max-h-[120px] sm:text-base"
@@ -63,7 +63,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSend, onStop, isLoading }) => {
       ) : (
         <button
           onClick={handleSend}
-          disabled={!text.trim()}
+          disabled={!value.trim()}
           className="px-4 py-2 rounded bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 transition text-sm sm:text-base"
         >
           Отправить

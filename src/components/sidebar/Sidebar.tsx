@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useChatStore } from '../../stores/useChatStore';
+import type { Chat } from '../../components/types/types';
+import { v4 as uuidv4 } from 'uuid';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const mockChats = [
-  { title: 'Приветствие', lastMessage: 'Сегодня 10:30', isActive: true },
-  { title: 'Тестовый чат', lastMessage: 'Вчера 18:45', isActive: false },
-  { title: 'Рабочие вопросы', lastMessage: 'Сегодня 09:12', isActive: false },
-  { title: 'Личный чат', lastMessage: 'Вчера 22:00', isActive: false },
-  { title: 'Еще один чат', lastMessage: 'Сегодня 08:00', isActive: false },
-];
-
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  const { chats, activeChatId, setActiveChat, addChat } = useChatStore();
+  const [search, setSearch] = useState('');
+
+  const filteredChats = chats.filter(
+    (chat) =>
+      chat.title.toLowerCase().includes(search.toLowerCase()) ||
+      chat.messages.some((m) =>
+        m.content.toLowerCase().includes(search.toLowerCase())
+      )
+  );
+
+  const handleNewChat = () => {
+    const newChat: Chat = {
+      id: uuidv4(),
+      title: 'Новый чат', // пока дефолтное название, изменится после первого сообщения
+      messages: [],
+    };
+    addChat(newChat);
+    setActiveChat(newChat.id);
+  };
+
   return (
     <div
       className={`
@@ -24,7 +40,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         flex flex-col h-screen
       `}
     >
-      {/* ===== Кнопка закрытия только на мобильных ===== */}
       <button
         className="mb-4 w-full bg-red-500 text-white p-2 rounded md:hidden hover:opacity-80 transition"
         onClick={onClose}
@@ -32,41 +47,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         ❌ Закрыть
       </button>
 
-      {/* ===== Новый чат (адаптивная кнопка) ===== */}
       <button
         className="mb-4 w-full bg-green-500 text-white p-3 rounded hover:bg-green-600 transition"
+        onClick={handleNewChat}
       >
         ➕ Новый чат
       </button>
 
-      {/* ===== Поиск ===== */}
       <input
         type="text"
         placeholder="Поиск..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
         className="mb-4 w-full p-2 border rounded border-[var(--border)] bg-[var(--bg)] text-[var(--text)] dark:bg-[var(--bg-dark)] dark:text-[var(--text-h)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
       />
 
-      {/* ===== Список чатов ===== */}
       <div className="flex-1 flex flex-col gap-2 overflow-y-auto">
-        {mockChats.map((chat, idx) => (
+        {filteredChats.map((chat) => (
           <div
-            key={idx}
+            key={chat.id}
             className={`
               flex justify-between items-center p-2 rounded cursor-pointer 
               hover:bg-gray-200 dark:hover:bg-gray-700
-              ${chat.isActive ? 'bg-gray-300 dark:bg-gray-600 font-semibold' : ''}
+              ${chat.id === activeChatId ? 'bg-gray-300 dark:bg-gray-600 font-semibold' : ''}
             `}
+            onClick={() => setActiveChat(chat.id)}
           >
             <div className="overflow-hidden">
-              <div className="truncate">{chat.title}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-300">{chat.lastMessage}</div>
-            </div>
-            <div className="flex gap-1 opacity-0 hover:opacity-100 transition-opacity">
-              <button className="text-gray-500 hover:text-gray-800 dark:hover:text-white">✏️</button>
-              <button className="text-red-500 hover:text-red-700">🗑️</button>
+              <div className="truncate">
+                {/* Если есть сообщения, название по первому сообщению */}
+                {chat.messages[0]?.content.slice(0, 40) || chat.title}
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-300">
+                {chat.messages[chat.messages.length - 1]?.content || 'Нет сообщений'}
+              </div>
             </div>
           </div>
         ))}
+
+        {filteredChats.length === 0 && (
+          <div className="text-gray-500 dark:text-gray-400 p-2">Чаты не найдены</div>
+        )}
       </div>
     </div>
   );
