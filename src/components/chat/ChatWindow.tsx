@@ -10,45 +10,67 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
-  const { chats, activeChatId, addMessage, setLoading, error, isLoading } = useChatStore();
+  const { chats, activeChatId, addMessage, setLoading, setError, error, isLoading } = useChatStore();
   const [input, setInput] = useState('');
 
+  // Находим активный чат
   const activeChat = chats.find((c) => c.id === activeChatId);
 
-  const handleSendMessage = (content: string) => {
-    if (!activeChatId || !content.trim()) return;
+  // РАННИЙ возврат, если чат не выбран
+  if (!activeChat) return <div className="p-4">Выберите чат</div>;
+
+  // ✅ Деструктуризация после проверки, чтобы TS знал что activeChat точно существует
+  const { id: activeChatIdSafe, title, messages } = activeChat;
+
+  const handleSendMessage = async (content: string) => {
+    if (!content.trim()) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(), // string
+      id: Date.now().toString(),
       role: 'user',
       content,
-      timestamp: new Date().toISOString(), // string
+      timestamp: new Date().toISOString(),
     };
 
     setLoading(true);
-    addMessage(activeChatId, userMessage);
+    addMessage(activeChatIdSafe, userMessage);
     setInput('');
 
-    // Симуляция ответа ассистента
-    setTimeout(() => {
+    try {
+      // Отправка на сервер
+      const response = await fetch('http://localhost:3001/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // ✅ Используем messages из деструктуризации
+          messages: messages.concat(userMessage),
+        }),
+      });
+
+      const data = await response.json();
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'Это ответ ассистента 😎',
+        content: data.choices[0].message.content,
         timestamp: new Date().toISOString(),
       };
-      addMessage(activeChatId, assistantMessage);
-      setLoading(false);
-    }, 1500 + Math.random() * 500);
-  };
 
-  if (!activeChat) return <div className="p-4">Выберите чат</div>;
+      addMessage(activeChatIdSafe, assistantMessage);
+    } catch (e) {
+      setError('Ошибка при запросе к GigaChat');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col border border-black">
       {/* Header */}
       <div className="p-4 flex justify-between items-center bg-gray-200 text-black border-b border-black">
-        <h2 className="text-lg font-semibold flex-1 text-center">{activeChat.title}</h2>
+        <h2 className="text-lg font-semibold flex-1 text-center">{title}</h2>
         {onOpenSettings && (
           <button
             className="text-black hover:text-gray-700 transition-colors"
@@ -61,7 +83,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
 
       {/* Сообщения */}
       <div className="flex-1 overflow-auto border-b border-black">
-        <MessagesList messages={activeChat.messages} isLoading={isLoading} />
+        <MessagesList messages={messages} isLoading={isLoading} />
       </div>
 
       {/* Ошибка */}
