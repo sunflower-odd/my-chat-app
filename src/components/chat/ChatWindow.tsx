@@ -44,7 +44,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onOpenSettings }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // ✅ Используем messages из деструктуризации
           messages: messages.concat(userMessage),
         }),
       });

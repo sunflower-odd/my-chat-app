@@ -74,12 +74,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             onClick={() => setActiveChat(chat.id)}
           >
             <div className="overflow-hidden">
-              <div className="truncate">
-                {/* Если есть сообщения, название по первому сообщению */}
-                {chat.messages[0]?.content.slice(0, 40) || chat.title}
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-300">
-                {chat.messages[chat.messages.length - 1]?.content || 'Нет сообщений'}
+              <div className="truncate font-semibold">
+                {chat.messages[0]
+                  ? chat.messages[0].content.split(' ').slice(0, 5).join(' ')
+                  : chat.title}
               </div>
             </div>
           </div>

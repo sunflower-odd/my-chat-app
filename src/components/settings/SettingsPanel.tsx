@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -6,7 +6,9 @@ interface SettingsPanelProps {
 }
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null; // скрываем панель, если закрыта
+  const [darkMode, setDarkMode] = useState(false);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50">
@@ -17,13 +19,19 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 h-screen w-80 max-w-full bg-white dark:bg-gray-900 shadow-lg p-6 flex flex-col z-50">
+      <div
+        className={`fixed top-0 right-0 h-screen w-80 max-w-full shadow-lg p-6 flex flex-col z-50
+          ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}
+      >
         <h2 className="text-xl font-bold mb-4">Настройки чата</h2>
 
         {/* Модель */}
         <div className="mb-4">
           <label className="block font-medium mb-1">Модель</label>
-          <select className="w-full border rounded p-2 dark:bg-gray-800 dark:text-white">
+          <select
+            className={`w-full border rounded p-2
+              ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-black border-gray-300'}`}
+          >
             <option>GigaChat</option>
             <option>GigaChat-Plus</option>
             <option>GigaChat-Pro</option>
@@ -40,7 +48,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             max={2}
             step={0.1}
             defaultValue={1}
-            className="w-full"
+            className={`w-full ${darkMode ? 'accent-purple-400' : ''}`}
           />
         </div>
 
@@ -53,7 +61,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
             max={1}
             step={0.01}
             defaultValue={0.9}
-            className="w-full"
+            className={`w-full ${darkMode ? 'accent-purple-400' : ''}`}
           />
         </div>
 
@@ -63,7 +71,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           <input
             type="number"
             defaultValue={1000}
-            className="w-full border rounded p-2 dark:bg-gray-800 dark:text-white"
+            className={`w-full border rounded p-2
+              ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-black border-gray-300'}`}
           />
         </div>
 
@@ -72,7 +81,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
           <label className="block font-medium mb-1">System Prompt</label>
           <textarea
             rows={3}
-            className="w-full border rounded p-2 dark:bg-gray-800 dark:text-white"
+            className={`w-full border rounded p-2
+              ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-black border-gray-300'}`}
             defaultValue="Привет! Настройка системы..."
           />
         </div>
@@ -80,18 +90,25 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         {/* Тема */}
         <div className="mb-4 flex items-center justify-between">
           <span className="font-medium">Тёмная тема</span>
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={darkMode}
+            onChange={(e) => setDarkMode(e.target.checked)}
+          />
         </div>
 
         {/* Кнопки */}
         <div className="flex justify-between mt-auto">
           <button
-            className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white"
+            className={`px-4 py-2 rounded
+              ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-black'}`}
             onClick={onClose}
           >
             Сбросить
           </button>
-          <button className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">
+          <button
+            className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+          >
             Сохранить
           </button>
         </div>

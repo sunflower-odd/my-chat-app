@@ -3,12 +3,12 @@
 /* ====== Переменные и глобальные стили ====== */
 :root {
   /* Цвета текста */
-  --text: #4b4b59;       /* основной текст */
-  --text-h: #111827;     /* заголовки */
+  --text: #4b4b59;       
+  --text-h: #111827;    
   
   /* Фон и бордеры */
-  --bg: #ffffff;           /* основной фон */
-  --border: #d1d5db;       /* стандартная граница */
+  --bg: #ffffff;           
+  --border: #d1d5db;       
   
   /* Акцентные цвета для кнопок, ссылок и hover */
   --accent: #7c3aed;       /* кнопки */
@@ -36,17 +36,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --border-color: #000; /* черная рамка */
-  --border-width: 1px;   /* толщина рамки */
+  --border-color: #000; 
+  --border-width: 1px;   
 }
 
-@media (max-width: 1024px) {
-  :root {
-    font-size: 16px;
-  }
-}
-
-/* ====== Тёмная тема ====== */
+/* ====== Тёмная тема через prefers-color-scheme (авто) ====== */
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #cbd5e1;
@@ -60,6 +54,20 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow: rgba(0,0,0,0.4) 0 10px 15px -3px, rgba(0,0,0,0.25) 0 4px 6px -2px;
   }
+}
+
+/* ====== Тёмная тема через класс dark (ручное переключение) ====== */
+html.dark {
+  --text: #cbd5e1;          
+  --text-h: #f3f4f6;       
+  --bg: #16171d;             
+  --border: #2e303a;         
+  --accent: #a78bfa;        
+  --accent-hover: #c4b5fd;   
+  --accent-bg: rgba(167, 139, 250, 0.15); 
+  --accent-border: rgba(167, 139, 250, 0.5); 
+  --social-bg: rgba(47, 48, 58, 0.5);       
+  --shadow: rgba(0,0,0,0.4) 0 10px 15px -3px, rgba(0,0,0,0.25) 0 4px 6px -2px; 
 }
 
 /* ====== Сброс базовых стилей ====== */
@@ -155,4 +163,10 @@ input:focus, textarea:focus {
 
 .card:hover {
   box-shadow: rgba(0,0,0,0.15) 0 10px 20px -5px;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
 }
